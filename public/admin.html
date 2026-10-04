@@ -1,0 +1,4903 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JalRakshak Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef4f8;
+            color: #1e293b;
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+        button,
+        a,
+        .stat-card {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =====================================================
+           LOGIN
+           ===================================================== */
+
+        #loginPage {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background:
+                radial-gradient(circle at top left, rgba(14, 165, 233, 0.28), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.28), transparent 35%),
+                linear-gradient(135deg, #0f172a, #075985 55%, #0f766e);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .login-card h1 {
+            text-align: center;
+            color: #075985;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+
+        .login-card p {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.10);
+        }
+
+        /* =====================================================
+           BUTTONS
+           ===================================================== */
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                filter 0.18s ease;
+            position: relative;
+            z-index: 20;
+            pointer-events: auto !important;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.03);
+            box-shadow: 0 5px 12px rgba(15, 23, 42, 0.12);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #0284c7;
+            color: white;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-dark {
+            background: #334155;
+            color: white;
+        }
+
+        .full-btn {
+            width: 100%;
+            padding: 13px;
+        }
+
+        .message {
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            font-size: 13px;
+        }
+
+        .message.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* =====================================================
+           DASHBOARD
+           ===================================================== */
+
+        #dashboardPage {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .topbar {
+            background: linear-gradient(110deg, #0f172a, #123b63 60%, #075985);
+            color: white;
+            padding: 16px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+
+            position: relative !important;
+            z-index: 10 !important;
+        }
+
+        .brand h1 {
+            font-size: 23px;
+            letter-spacing: 0.2px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-top: 3px;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .role-badge {
+            background: #0284c7;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =====================================================
+           STATS
+           IMPORTANT: CLICK LAYERING
+           ===================================================== */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+
+            position: relative;
+            z-index: 500;
+            pointer-events: auto !important;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 13px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.07);
+
+            cursor: pointer;
+            user-select: none;
+
+            position: relative !important;
+            z-index: 501 !important;
+            pointer-events: auto !important;
+
+            border: 2px solid transparent;
+            border-top-width: 4px;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+
+            min-height: 105px;
+        }
+
+        .stat-card:nth-child(1) {
+            border-top-color: #0284c7;
+        }
+
+        .stat-card:nth-child(2) {
+            border-top-color: #f59e0b;
+        }
+
+        .stat-card:nth-child(3) {
+            border-top-color: #2563eb;
+        }
+
+        .stat-card:nth-child(4) {
+            border-top-color: #16a34a;
+        }
+
+        .stat-card:nth-child(5) {
+            border-top-color: #dc2626;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 22px rgba(15, 23, 42, 0.13);
+        }
+
+        .stat-card:active {
+            transform: translateY(-1px) scale(0.99);
+        }
+
+        .stat-card:focus {
+            outline: none;
+        }
+
+        .stat-card.active {
+            background: #f8fcff;
+            box-shadow:
+                0 0 0 3px rgba(2, 132, 199, 0.12),
+                0 9px 22px rgba(2, 132, 199, 0.13);
+        }
+
+        .stat-card:nth-child(2).active {
+            box-shadow:
+                0 0 0 3px rgba(245, 158, 11, 0.13),
+                0 9px 22px rgba(245, 158, 11, 0.13);
+        }
+
+        .stat-card:nth-child(3).active {
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.12),
+                0 9px 22px rgba(37, 99, 235, 0.13);
+        }
+
+        .stat-card:nth-child(4).active {
+            box-shadow:
+                0 0 0 3px rgba(22, 163, 74, 0.12),
+                0 9px 22px rgba(22, 163, 74, 0.13);
+        }
+
+        .stat-card:nth-child(5).active {
+            box-shadow:
+                0 0 0 3px rgba(220, 38, 38, 0.12),
+                0 9px 22px rgba(220, 38, 38, 0.13);
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .stat-card:nth-child(1) .stat-number {
+            color: #0284c7;
+        }
+
+        .stat-card:nth-child(2) .stat-number {
+            color: #d97706;
+        }
+
+        .stat-card:nth-child(3) .stat-number {
+            color: #2563eb;
+        }
+
+        .stat-card:nth-child(4) .stat-number {
+            color: #16a34a;
+        }
+
+        .stat-card:nth-child(5) .stat-number {
+            color: #dc2626;
+        }
+
+        /* =====================================================
+           SECTION
+           ===================================================== */
+
+        .section {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            color: #0f172a;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* =====================================================
+           REQUEST CARDS
+           ===================================================== */
+
+        .request-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .request-card {
+            border: 1px solid #dbe4ec;
+            border-radius: 12px;
+            padding: 18px;
+            background: #fff;
+            position: relative;
+            z-index: 2;
+            transition:
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .request-card:hover {
+            box-shadow: 0 7px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        .request-card.emergency {
+            border-left: 5px solid #dc2626;
+            background: linear-gradient(to right, #fffafa, #ffffff 18%);
+        }
+
+        .request-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .request-id {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0369a1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-accepted {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .request-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #edf2f7;
+        }
+
+        .detail-box strong {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .detail-box span {
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .location-box {
+            margin-top: 15px;
+            background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .location-title {
+            font-weight: bold;
+            color: #1d4ed8;
+            margin-bottom: 8px;
+        }
+
+        .coordinates {
+            font-family: monospace;
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #334155;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 35px;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        /* =====================================================
+           SAFE POINT
+           ===================================================== */
+
+        .safe-point-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .safe-point-form .form-group {
+            margin-bottom: 0;
+        }
+
+        .safe-point-active-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .safe-point-active-row input {
+            width: 18px;
+            height: 18px;
+            accent-color: #16a34a;
+        }
+
+        .safe-point-form-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .safe-point-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .safe-point-card {
+            border: 1px solid #dbe4ec;
+            border-radius: 12px;
+            padding: 17px;
+            background: #fff;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .safe-point-card:hover {
+            box-shadow: 0 7px 18px rgba(15, 23, 42, 0.07);
+            transform: translateY(-1px);
+        }
+
+        .safe-point-card.inactive {
+            opacity: 0.62;
+            background: #f8fafc;
+        }
+
+        .safe-point-card h3 {
+            margin-bottom: 6px;
+            color: #075985;
+        }
+
+        .safe-point-type {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #075985;
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .safe-point-address {
+            color: #475569;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .safe-point-coordinates {
+            font-family: monospace;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* =====================================================
+           ADMIN
+           ===================================================== */
+
+        .admin-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 18px;
+        }
+
+        .admin-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .admin-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid #dbe4ec;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+
+        .admin-card:hover {
+            box-shadow: 0 5px 15px rgba(15, 23, 42, 0.06);
+        }
+
+        .admin-card-info strong {
+            display: block;
+        }
+
+        .admin-card-info small {
+            color: #64748b;
+        }
+
+        .active-badge {
+            color: #166534;
+            background: #dcfce7;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .inactive-badge {
+            color: #991b1b;
+            background: #fee2e2;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* =====================================================
+           LOG
+           ===================================================== */
+
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .log-card {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 8px;
+            border-left: 3px solid #0284c7;
+            padding-left: 13px;
+        }
+
+        .log-card:last-child {
+            border-bottom: none;
+        }
+
+        .log-action {
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .log-details {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 4px;
+        }
+
+        .log-time {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* =====================================================
+           GENERAL CLICK SAFETY
+           ===================================================== */
+
+        .dashboard,
+        .main-content,
+        .content,
+        .card,
+        .section,
+        .request-card,
+        .safe-point-card,
+        .admin-card,
+        button,
+        a {
+            position: relative;
+        }
+
+        button {
+            z-index: 100 !important;
+            pointer-events: auto !important;
+        }
+
+        /* =====================================================
+           FILTER BUTTON
+           ===================================================== */
+
+        #showAllRequestsBtn {
+            display: none;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .request-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 750px) {
+
+            .container {
+                padding: 14px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .request-grid,
+            .safe-point-list,
+            .safe-point-form,
+            .admin-form {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 14px;
+            }
+
+            .brand h1 {
+                font-size: 20px;
+            }
+
+            .section {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 450px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 14px;
+            }
+
+            .stat-card {
+                min-height: auto;
+            }
+
+            .login-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         LOGIN PAGE
+         ===================================================== -->
+
+    <div id="loginPage">
+
+        <div class="login-card">
+
+            <h1>🌊 JalRakshak</h1>
+
+            <p>Admin Dashboard Login</p>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+
+                    <label for="loginUsername">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        placeholder="Enter username"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="Enter password"
+                        required>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary full-btn">
+
+                    Login
+
+                </button>
+
+            </form>
+
+            <div
+                id="loginMessage"
+                class="message">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DASHBOARD
+         ===================================================== -->
+
+    <div
+        id="dashboardPage"
+        class="hidden">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="brand">
+
+                <h1>
+                    🌊 JalRakshak Admin Dashboard
+                </h1>
+
+                <p>
+                    Flood Safety & Emergency Response System
+                </p>
+
+            </div>
+
+            <div class="admin-info">
+
+                <span id="loggedAdminName">
+                    Admin
+                </span>
+
+                <span
+                    id="loggedAdminRole"
+                    class="role-badge">
+
+                    Admin
+
+                </span>
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    onclick="logoutAdmin()">
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="container">
+
+            <!-- =================================================
+                 STATS
+                 ================================================= -->
+
+            <div class="stats-grid">
+
+                <div
+                    class="stat-card active"
+                    role="button"
+                    tabindex="0"
+                    onclick="filterRequests('all')"
+                    title="Show all requests">
+
+                    <h3>
+                        Total Requests
+                    </h3>
+
+                    <div
+                        class="stat-number"
+                        id="totalRequests">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="stat-card"
+                    role="button"
+                    tabindex="0"
+                    onclick="filterRequests('Pending')"
+                    title="Show pending requests">
+
+                    <h3>
+                        Pending
+                    </h3>
+
+                    <div
+                        class="stat-number"
+                        id="pendingRequests">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="stat-card"
+                    role="button"
+                    tabindex="0"
+                    onclick="filterRequests('Accepted')"
+                    title="Show accepted requests">
+
+                    <h3>
+                        Accepted
+                    </h3>
+
+                    <div
+                        class="stat-number"
+                        id="acceptedRequests">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="stat-card"
+                    role="button"
+                    tabindex="0"
+                    onclick="filterRequests('Completed')"
+                    title="Show completed requests">
+
+                    <h3>
+                        Completed
+                    </h3>
+
+                    <div
+                        class="stat-number"
+                        id="completedRequests">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="stat-card"
+                    role="button"
+                    tabindex="0"
+                    onclick="filterRequests('Emergency')"
+                    title="Show emergency requests">
+
+                    <h3>
+                        Emergency
+                    </h3>
+
+                    <div
+                        class="stat-number"
+                        id="emergencyRequests">
+
+                        0
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 REQUESTS
+                 ================================================= -->
+
+            <div class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Volunteer / Emergency Requests
+                        </h2>
+
+                        <p>
+                            View and manage citizen emergency help requests.
+                        </p>
+
+                    </div>
+
+                    <div class="section-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="loadRequests()">
+
+                            🔄 Refresh
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="showAllRequestsBtn"
+                            class="btn btn-secondary"
+                            onclick="filterRequests('all')">
+
+                            👁 Show All
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="requestMessage"
+                    class="message">
+                </div>
+
+
+                <div
+                    id="requestList"
+                    class="request-list">
+
+                    <div class="empty-state">
+                        Loading requests...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SAFE AREA
+                 ================================================= -->
+
+            <div
+                class="section"
+                id="safePointSection">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            🛟 Safe Area & Emergency Shelter Management
+                        </h2>
+
+                        <p>
+                            Main Admin can add, update, enable/disable and delete verified safe locations.
+                        </p>
+
+                    </div>
+
+                    <div class="section-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="loadSafePointsAdmin()">
+
+                            🔄 Refresh
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="safe-point-form">
+
+                    <div class="form-group">
+
+                        <label for="safePointName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="safePointName"
+                            placeholder="e.g. Community Safe Shelter">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="safePointAddress">
+                            Address
+                        </label>
+
+                        <input
+                            type="text"
+                            id="safePointAddress"
+                            placeholder="Enter complete address">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="safePointType">
+                            Type
+                        </label>
+
+                        <select id="safePointType">
+
+                            <option value="Safe Area">
+                                Safe Area
+                            </option>
+
+                            <option value="Emergency Shelter">
+                                Emergency Shelter
+                            </option>
+
+                            <option value="Hospital">
+                                Hospital
+                            </option>
+
+                            <option value="Relief Center">
+                                Relief Center
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="safePointLatitude">
+                            Latitude
+                        </label>
+
+                        <input
+                            type="number"
+                            step="any"
+                            id="safePointLatitude"
+                            placeholder="e.g. 19.102500">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="safePointLongitude">
+                            Longitude
+                        </label>
+
+                        <input
+                            type="number"
+                            step="any"
+                            id="safePointLongitude"
+                            placeholder="e.g. 72.932200">
+
+                    </div>
+
+
+                    <div class="safe-point-active-row">
+
+                        <label>
+
+                            <input
+                                type="checkbox"
+                                id="safePointActive"
+                                checked>
+
+                            Active
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="safe-point-form-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            id="safePointSaveBtn"
+                            onclick="saveSafePoint()">
+
+                            ➕ Add Safe Area
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="safePointCancelBtn"
+                            onclick="cancelSafePointEdit()"
+                            style="display:none;">
+
+                            ✖ Cancel Edit
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="safePointMessage"
+                    class="message">
+                </div>
+
+
+                <div
+                    id="safePointList"
+                    class="safe-point-list">
+
+                    <div class="empty-state">
+                        Loading Safe Areas...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 GOVERNMENT ADMINS
+                 ================================================= -->
+
+            <div
+                class="section"
+                id="governmentAdminSection">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            👮 Government Admin Management
+                        </h2>
+
+                        <p>
+                            Main Admin can create, enable, disable and delete government employee accounts.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="loadGovernmentAdmins()">
+
+                        🔄 Refresh
+
+                    </button>
+
+                </div>
+
+
+                <div class="admin-form">
+
+                    <div class="form-group">
+
+                        <label for="newAdminUsername">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="newAdminUsername"
+                            placeholder="Government admin username">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="newAdminPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="newAdminPassword"
+                            placeholder="Minimum 6 characters">
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="createGovernmentAdmin()">
+
+                        ➕ Create Admin
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="governmentAdminMessage"
+                    class="message">
+                </div>
+
+
+                <div
+                    id="governmentAdminList"
+                    class="admin-list">
+
+                    <div class="empty-state">
+                        Loading government admins...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CHANGE PASSWORD
+                 ================================================= -->
+
+            <div class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            🔐 Change My Password
+                        </h2>
+
+                        <p>
+                            Change the password of the currently logged-in admin.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="changePasswordForm">
+
+                    <div class="admin-form">
+
+                        <div class="form-group">
+
+                            <label for="currentPassword">
+                                Current Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="newPassword">
+                                New Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="newPassword"
+                                minlength="6"
+                                required>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-warning">
+
+                            Change Password
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <div
+                    id="passwordMessage"
+                    class="message">
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTIVITY LOG
+                 ================================================= -->
+
+            <div class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            📋 Activity Log
+                        </h2>
+
+                        <p>
+                            Track which admin handled which work.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="loadActivityLogs()">
+
+                        🔄 Refresh
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="activityLogList"
+                    class="log-list">
+
+                    <div class="empty-state">
+                        Loading activity logs...
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+        let currentAdmin = null;
+
+        let allRequests = [];
+
+        let allSafePoints = [];
+
+        let editingSafePointId = null;
+
+        /* Keep currently selected filter */
+        let currentRequestFilter = "all";
+
+
+        /* =====================================================
+           COMMON HELPERS
+           ===================================================== */
+
+        function escapeHtml(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                return "";
+            }
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        function showMessage(
+            elementId,
+            message,
+            type
+        ) {
+
+            const element =
+                document.getElementById(
+                    elementId
+                );
+
+            if (!element) {
+                return;
+            }
+
+            element.textContent =
+                message;
+
+            element.className =
+                "message " + type;
+
+        }
+
+
+        function formatDate(dateValue) {
+
+            if (!dateValue) {
+                return "N/A";
+            }
+
+            const date =
+                new Date(dateValue);
+
+            if (
+                Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+                return "N/A";
+            }
+
+            return date.toLocaleString(
+                "en-IN",
+                {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit"
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           LOGIN
+           ===================================================== */
+
+        document
+            .getElementById("loginForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+                    const username =
+                        document
+                            .getElementById(
+                                "loginUsername"
+                            )
+                            .value
+                            .trim();
+
+                    const password =
+                        document
+                            .getElementById(
+                                "loginPassword"
+                            )
+                            .value;
+
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                "/api/admin-login",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    credentials:
+                                        "same-origin",
+
+                                    body:
+                                        JSON.stringify({
+                                            username,
+                                            password
+                                        })
+                                }
+                            );
+
+
+                        const data =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            showMessage(
+                                "loginMessage",
+                                data.message ||
+                                "Login failed.",
+                                "error"
+                            );
+
+                            return;
+
+                        }
+
+
+                        currentAdmin =
+                            data.admin;
+
+                        showDashboard();
+
+
+                    } catch(error) {
+
+                        console.error(error);
+
+                        showMessage(
+                            "loginMessage",
+                            "Server se connection nahi ho raha.",
+                            "error"
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* =====================================================
+           CHECK LOGIN
+           ===================================================== */
+
+        async function checkAdminSession() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin-me",
+                        {
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.admin) {
+
+                    currentAdmin =
+                        data.admin;
+
+                    showDashboard();
+
+                }
+
+
+            } catch(error) {
+
+                console.log(
+                    "No active admin session."
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SHOW DASHBOARD
+           ===================================================== */
+
+        function showDashboard() {
+
+            document
+                .getElementById("loginPage")
+                .classList.add("hidden");
+
+
+            document
+                .getElementById("dashboardPage")
+                .classList.remove("hidden");
+
+
+            document
+                .getElementById(
+                    "loggedAdminName"
+                )
+                .textContent =
+                currentAdmin.username;
+
+
+            document
+                .getElementById(
+                    "loggedAdminRole"
+                )
+                .textContent =
+                currentAdmin.role ===
+                "mainAdmin"
+                    ? "Main Admin"
+                    : "Government Admin";
+
+
+            if (
+                currentAdmin.role ===
+                "mainAdmin"
+            ) {
+
+                document
+                    .getElementById(
+                        "safePointSection"
+                    )
+                    .classList.remove(
+                        "hidden"
+                    );
+
+
+                document
+                    .getElementById(
+                        "governmentAdminSection"
+                    )
+                    .classList.remove(
+                        "hidden"
+                    );
+
+            } else {
+
+                document
+                    .getElementById(
+                        "safePointSection"
+                    )
+                    .classList.add(
+                        "hidden"
+                    );
+
+
+                document
+                    .getElementById(
+                        "governmentAdminSection"
+                    )
+                    .classList.add(
+                        "hidden"
+                    );
+
+            }
+
+
+            loadRequests();
+
+            loadActivityLogs();
+
+
+            if (
+                currentAdmin.role ===
+                "mainAdmin"
+            ) {
+
+                loadSafePointsAdmin();
+
+                loadGovernmentAdmins();
+
+            }
+
+        }
+
+
+        /* =====================================================
+           LOGOUT
+           ===================================================== */
+
+        async function logoutAdmin() {
+
+            try {
+
+                await fetch(
+                    "/api/admin-logout",
+                    {
+                        method: "POST",
+                        credentials:
+                            "same-origin"
+                    }
+                );
+
+            } catch(error) {
+
+                console.error(error);
+
+            }
+
+
+            currentAdmin = null;
+
+            currentRequestFilter = "all";
+
+
+            document
+                .getElementById(
+                    "dashboardPage"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+
+            document
+                .getElementById(
+                    "loginPage"
+                )
+                .classList.remove(
+                    "hidden"
+                );
+
+
+            document
+                .getElementById(
+                    "loginPassword"
+                )
+                .value = "";
+
+        }
+
+
+        /* =====================================================
+           REQUESTS
+           ===================================================== */
+
+        async function loadRequests() {
+
+            const list =
+                document.getElementById(
+                    "requestList"
+                );
+
+
+            list.innerHTML =
+                `
+                <div class="empty-state">
+                    Loading requests...
+                </div>
+                `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/volunteer-requests",
+                        {
+                            credentials:
+                                "same-origin",
+                            cache:
+                                "no-store"
+                        }
+                    );
+
+
+                if (
+                    response.status ===
+                    401
+                ) {
+
+                    logoutAdmin();
+
+                    return;
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to load requests."
+                    );
+
+                }
+
+
+                allRequests =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            data.requests ||
+                            []
+                        );
+
+
+                updateStats();
+
+                renderRequests();
+
+
+            } catch(error) {
+
+                console.error(
+                    "Load requests error:",
+                    error
+                );
+
+
+                list.innerHTML =
+                    `
+                    <div class="empty-state">
+
+                        Unable to load requests.
+
+                        <br>
+
+                        <small>
+                            ${escapeHtml(
+                                error.message
+                            )}
+                        </small>
+
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           UPDATE STATS
+           ===================================================== */
+
+        function updateStats() {
+
+            const total =
+                allRequests.length;
+
+
+            const pending =
+                allRequests.filter(
+                    r =>
+                        r.status ===
+                        "Pending"
+                ).length;
+
+
+            const accepted =
+                allRequests.filter(
+                    r =>
+                        r.status ===
+                        "Accepted"
+                ).length;
+
+
+            const completed =
+                allRequests.filter(
+                    r =>
+                        r.status ===
+                        "Completed"
+                ).length;
+
+
+            const emergency =
+                allRequests.filter(
+                    r =>
+                        r.isEmergency ===
+                        true
+                ).length;
+
+
+            document.getElementById(
+                "totalRequests"
+            ).textContent =
+                total;
+
+
+            document.getElementById(
+                "pendingRequests"
+            ).textContent =
+                pending;
+
+
+            document.getElementById(
+                "acceptedRequests"
+            ).textContent =
+                accepted;
+
+
+            document.getElementById(
+                "completedRequests"
+            ).textContent =
+                completed;
+
+
+            document.getElementById(
+                "emergencyRequests"
+            ).textContent =
+                emergency;
+
+        }
+
+
+        /* =====================================================
+           SET ACTIVE STAT CARD
+           ===================================================== */
+
+        function setActiveStatCard(filter) {
+
+            const cardIndexMap = {
+
+                all: 0,
+
+                Pending: 1,
+
+                Accepted: 2,
+
+                Completed: 3,
+
+                Emergency: 4
+
+            };
+
+
+            const selectedIndex =
+                cardIndexMap[filter];
+
+
+            const statCards =
+                document.querySelectorAll(
+                    ".stat-card"
+                );
+
+
+            statCards.forEach(
+                card => {
+                    card.classList.remove(
+                        "active"
+                    );
+                }
+            );
+
+
+            if (
+                selectedIndex !== undefined &&
+                statCards[selectedIndex]
+            ) {
+
+                statCards[selectedIndex]
+                    .classList.add(
+                        "active"
+                    );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           RENDER REQUESTS
+           ===================================================== */
+
+        function renderRequests() {
+
+            const list =
+                document.getElementById(
+                    "requestList"
+                );
+
+
+            const showAllButton =
+                document.getElementById(
+                    "showAllRequestsBtn"
+                );
+
+
+            /*
+             * IMPORTANT:
+             * Do not reset filter to Total here.
+             * Keep the currently selected stat card.
+             */
+
+            setActiveStatCard(
+                currentRequestFilter
+            );
+
+
+            if (!allRequests.length) {
+
+                list.innerHTML =
+                    `
+                    <div class="empty-state">
+
+                        No volunteer or emergency requests found.
+
+                    </div>
+                    `;
+
+
+                showAllButton.style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            let filteredRequests =
+                allRequests;
+
+
+            if (
+                currentRequestFilter ===
+                "Emergency"
+            ) {
+
+                filteredRequests =
+                    allRequests.filter(
+                        request =>
+                            request.isEmergency ===
+                            true
+                    );
+
+            } else if (
+                currentRequestFilter !==
+                "all"
+            ) {
+
+                filteredRequests =
+                    allRequests.filter(
+                        request =>
+                            request.status ===
+                            currentRequestFilter
+                    );
+
+            }
+
+
+            if (
+                !filteredRequests.length
+            ) {
+
+                list.innerHTML =
+                    `
+                    <div class="empty-state">
+
+                        No ${
+                            currentRequestFilter === "all"
+                                ? ""
+                                : currentRequestFilter + " "
+                        }
+                        requests found.
+
+                    </div>
+                    `;
+
+
+                showAllButton.style.display =
+                    currentRequestFilter ===
+                    "all"
+                        ? "none"
+                        : "inline-block";
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                filteredRequests
+                    .map(
+                        createRequestCard
+                    )
+                    .join("");
+
+
+            showAllButton.style.display =
+                currentRequestFilter ===
+                "all"
+                    ? "none"
+                    : "inline-block";
+
+        }
+
+
+        /* =====================================================
+           FILTER REQUESTS
+           ===================================================== */
+
+        function filterRequests(filter) {
+
+            /*
+             * Save selected filter.
+             */
+            currentRequestFilter =
+                filter;
+
+
+            /*
+             * Update selected card.
+             */
+            setActiveStatCard(
+                filter
+            );
+
+
+            /*
+             * Render filtered data.
+             */
+            renderRequests();
+
+
+            /*
+             * Smooth scroll to request list.
+             */
+            const requestList =
+                document.getElementById(
+                    "requestList"
+                );
+
+
+            if (requestList) {
+
+                requestList.scrollIntoView({
+                    behavior:
+                        "smooth",
+                    block:
+                        "start"
+                });
+
+            }
+
+        }
+
+
+        /* =====================================================
+           CREATE REQUEST CARD
+           ===================================================== */
+
+        function createRequestCard(
+            request
+        ) {
+
+            const status =
+                request.status ||
+                "Pending";
+
+
+            let statusClass =
+                "status-pending";
+
+
+            if (
+                status ===
+                "Accepted"
+            ) {
+
+                statusClass =
+                    "status-accepted";
+
+            }
+
+
+            if (
+                status ===
+                "Completed"
+            ) {
+
+                statusClass =
+                    "status-completed";
+
+            }
+
+
+            const latitude =
+                request.location &&
+                request.location.latitude !==
+                    null &&
+                request.location.latitude !==
+                    undefined
+                    ? Number(
+                        request.location.latitude
+                    )
+                    : null;
+
+
+            const longitude =
+                request.location &&
+                request.location.longitude !==
+                    null &&
+                request.location.longitude !==
+                    undefined
+                    ? Number(
+                        request.location.longitude
+                    )
+                    : null;
+
+
+            const hasLocation =
+                Number.isFinite(
+                    latitude
+                ) &&
+                Number.isFinite(
+                    longitude
+                );
+
+
+            const emergencyClass =
+                request.isEmergency
+                    ? " emergency"
+                    : "";
+
+
+            let actionButtons =
+                "";
+
+
+            if (
+                status ===
+                "Pending"
+            ) {
+
+                actionButtons +=
+                    `
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="acceptRequest('${escapeHtml(request.requestId)}')">
+
+                        ✓ Accept / Confirm
+
+                    </button>
+                    `;
+
+            }
+
+
+            if (
+                status ===
+                "Accepted"
+            ) {
+
+                actionButtons +=
+                    `
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="completeRequest('${escapeHtml(request.requestId)}')">
+
+                        ✓ Complete
+
+                    </button>
+                    `;
+
+
+                actionButtons +=
+                    `
+                    <button
+                        type="button"
+                        class="btn btn-warning"
+                        onclick="pendingRequest('${escapeHtml(request.requestId)}')">
+
+                        ↩ Pending
+
+                    </button>
+                    `;
+
+            }
+
+
+            if (
+                status ===
+                "Completed"
+            ) {
+
+                actionButtons +=
+                    `
+                    <button
+                        type="button"
+                        class="btn btn-warning"
+                        onclick="pendingRequest('${escapeHtml(request.requestId)}')">
+
+                        ↩ Pending
+
+                    </button>
+                    `;
+
+            }
+
+
+            actionButtons +=
+                `
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    onclick="deleteRequest('${escapeHtml(request.requestId)}')">
+
+                    🗑 Delete
+
+                </button>
+                `;
+
+
+            let locationHtml =
+                "";
+
+
+            if (hasLocation) {
+
+                const mapsUrl =
+                    `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+
+                const directionsUrl =
+                    `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=walking`;
+
+
+                locationHtml =
+                    `
+                    <div class="location-box">
+
+                        <div class="location-title">
+
+                            📍 Citizen's Current Location
+
+                        </div>
+
+
+                        <div class="coordinates">
+
+                            Latitude:
+                            ${latitude.toFixed(6)}
+
+                            <br>
+
+                            Longitude:
+                            ${longitude.toFixed(6)}
+
+                        </div>
+
+
+                        <div class="action-row">
+
+                            <a
+                                href="${mapsUrl}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-primary"
+                                style="text-decoration:none;">
+
+                                📍 Open Exact Location
+
+                            </a>
+
+
+                            <a
+                                href="${directionsUrl}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-dark"
+                                style="text-decoration:none;">
+
+                                🧭 Get Directions
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                    `;
+
+            } else {
+
+                locationHtml =
+                    `
+                    <div class="location-box">
+
+                        <div class="location-title">
+
+                            📍 Citizen's Current Location
+
+                        </div>
+
+
+                        <div>
+
+                            Location was not provided with this request.
+
+                        </div>
+
+                    </div>
+                    `;
+
+            }
+
+
+            const handledBy =
+                request.handledBy &&
+                request.handledBy.username
+                    ? escapeHtml(
+                        request.handledBy.username
+                    )
+                    : "Not handled yet";
+
+
+            return `
+                <div class="request-card${emergencyClass}">
+
+                    <div class="request-top">
+
+                        <div>
+
+                            <div class="request-id">
+
+                                ${escapeHtml(
+                                    request.requestId
+                                )}
+
+                            </div>
+
+
+                            ${
+                                request.isEmergency
+                                    ? `
+                                        <div style="
+                                            margin-top:6px;
+                                            color:#dc2626;
+                                            font-weight:bold;
+                                            font-size:12px;">
+
+                                            🚨 EMERGENCY
+
+                                        </div>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+
+                        <span
+                            class="status-badge ${statusClass}">
+
+                            ${escapeHtml(
+                                status
+                            )}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="request-grid">
+
+                        <div class="detail-box">
+
+                            <strong>
+                                Citizen Name
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(
+                                    request.name
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-box">
+
+                            <strong>
+                                Mobile
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(
+                                    request.mobile
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-box">
+
+                            <strong>
+                                Submitted
+                            </strong>
+
+                            <span>
+                                ${formatDate(
+                                    request.createdAt
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-box">
+
+                            <strong>
+                                Emergency Details
+                            </strong>
+
+                            <span>
+
+                                ${
+                                    escapeHtml(
+                                        request.emergencyDetails ||
+                                        "No details provided"
+                                    )
+                                }
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-box">
+
+                            <strong>
+                                Handled By
+                            </strong>
+
+                            <span>
+                                ${handledBy}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-box">
+
+                            <strong>
+                                Handled At
+                            </strong>
+
+                            <span>
+
+                                ${
+                                    request.handledBy &&
+                                    request.handledBy.handledAt
+                                        ? formatDate(
+                                            request.handledBy.handledAt
+                                        )
+                                        : "Not handled yet"
+                                }
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    ${locationHtml}
+
+
+                    <div class="action-row">
+
+                        ${actionButtons}
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+
+        /* =====================================================
+           ACCEPT
+           ===================================================== */
+
+        async function acceptRequest(
+            requestId
+        ) {
+
+            await updateRequestStatus(
+                requestId,
+                "Accepted"
+            );
+
+        }
+
+
+        /* =====================================================
+           COMPLETE
+           ===================================================== */
+
+        async function completeRequest(
+            requestId
+        ) {
+
+            await updateRequestStatus(
+                requestId,
+                "Completed"
+            );
+
+        }
+
+
+        /* =====================================================
+           PENDING
+           ===================================================== */
+
+        async function pendingRequest(
+            requestId
+        ) {
+
+            await updateRequestStatus(
+                requestId,
+                "Pending"
+            );
+
+        }
+
+
+        /* =====================================================
+           UPDATE STATUS
+           ===================================================== */
+
+        async function updateRequestStatus(
+            requestId,
+            newStatus
+        ) {
+
+            if (!requestId) {
+
+                alert(
+                    "Request ID missing."
+                );
+
+                return;
+
+            }
+
+
+            const confirmText =
+                `Change request ${requestId} to ${newStatus}?`;
+
+
+            if (
+                !confirm(
+                    confirmText
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/volunteer-requests/${encodeURIComponent(requestId)}/status`,
+                        {
+                            method:
+                                "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            credentials:
+                                "same-origin",
+
+                            body:
+                                JSON.stringify({
+                                    status:
+                                        newStatus
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    response.status ===
+                    401
+                ) {
+
+                    alert(
+                        "Session expired. Please login again."
+                    );
+
+
+                    logoutAdmin();
+
+                    return;
+
+                }
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Unable to update request."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadRequests();
+
+                await loadActivityLogs();
+
+
+                showMessage(
+                    "requestMessage",
+                    data.message ||
+                    `Request marked as ${newStatus}.`,
+                    "success"
+                );
+
+
+            } catch(error) {
+
+                console.error(
+                    "Update status error:",
+                    error
+                );
+
+
+                alert(
+                    "Server se connection nahi ho raha."
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           DELETE REQUEST
+           ===================================================== */
+
+        async function deleteRequest(
+            requestId
+        ) {
+
+            if (!requestId) {
+
+                alert(
+                    "Request ID missing."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !confirm(
+                    `Delete request ${requestId}?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/volunteer-request/${encodeURIComponent(requestId)}`,
+                        {
+                            method:
+                                "DELETE",
+
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    response.status ===
+                    401
+                ) {
+
+                    alert(
+                        "Session expired. Please login again."
+                    );
+
+
+                    logoutAdmin();
+
+                    return;
+
+                }
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Request delete nahi hui."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadRequests();
+
+                await loadActivityLogs();
+
+
+                showMessage(
+                    "requestMessage",
+                    data.message ||
+                    "Request deleted successfully.",
+                    "success"
+                );
+
+
+            } catch(error) {
+
+                console.error(
+                    "Delete request error:",
+                    error
+                );
+
+
+                alert(
+                    "Server se connection nahi ho raha."
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SAFE POINTS
+           ===================================================== */
+
+        async function loadSafePointsAdmin() {
+
+            const list =
+                document.getElementById(
+                    "safePointList"
+                );
+
+
+            list.innerHTML =
+                `
+                <div class="empty-state">
+                    Loading Safe Areas...
+                </div>
+                `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/safe-points",
+                        {
+                            credentials:
+                                "same-origin",
+                            cache:
+                                "no-store"
+                        }
+                    );
+
+
+                if (
+                    response.status ===
+                    401
+                ) {
+
+                    logoutAdmin();
+
+                    return;
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to load safe points."
+                    );
+
+                }
+
+
+                allSafePoints =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            data.safePoints ||
+                            data.points ||
+                            []
+                        );
+
+
+                renderSafePoints();
+
+
+            } catch(error) {
+
+                console.error(
+                    "Safe point load error:",
+                    error
+                );
+
+
+                list.innerHTML =
+                    `
+                    <div class="empty-state">
+
+                        Unable to load Safe Areas.
+
+                        <br>
+
+                        <small>
+
+                            ${escapeHtml(
+                                error.message
+                            )}
+
+                        </small>
+
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+        function renderSafePoints() {
+
+            const list =
+                document.getElementById(
+                    "safePointList"
+                );
+
+
+            if (
+                !allSafePoints.length
+            ) {
+
+                list.innerHTML =
+                    `
+                    <div class="empty-state">
+
+                        No Safe Areas found.
+
+                    </div>
+                    `;
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                allSafePoints
+                    .map(
+                        createSafePointCard
+                    )
+                    .join("");
+
+        }
+
+
+        function createSafePointCard(
+            point
+        ) {
+
+            const active =
+                point.active !== false;
+
+
+            return `
+                <div class="safe-point-card ${
+                    active
+                        ? ""
+                        : "inactive"
+                }">
+
+                    <h3>
+
+                        ${escapeHtml(
+                            point.name
+                        )}
+
+                    </h3>
+
+
+                    <span class="safe-point-type">
+
+                        ${escapeHtml(
+                            point.type
+                        )}
+
+                    </span>
+
+
+                    <div class="safe-point-address">
+
+                        📍
+                        ${escapeHtml(
+                            point.address
+                        )}
+
+                    </div>
+
+
+                    <div class="safe-point-coordinates">
+
+                        Latitude:
+                        ${Number(
+                            point.latitude
+                        ).toFixed(6)}
+
+                        <br>
+
+                        Longitude:
+                        ${Number(
+                            point.longitude
+                        ).toFixed(6)}
+
+                    </div>
+
+
+                    <div style="margin-bottom:10px;">
+
+                        ${
+                            active
+                                ? `
+                                    <span class="active-badge">
+
+                                        ACTIVE
+
+                                    </span>
+                                `
+                                : `
+                                    <span class="inactive-badge">
+
+                                        DISABLED
+
+                                    </span>
+                                `
+                        }
+
+                    </div>
+
+
+                    <div class="action-row">
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="editSafePoint('${point._id}')">
+
+                            ✏ Edit
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn ${
+                                active
+                                    ? "btn-warning"
+                                    : "btn-success"
+                            }"
+                            onclick="toggleSafePoint('${point._id}', ${!active})">
+
+                            ${
+                                active
+                                    ? "⏸ Disable"
+                                    : "▶ Enable"
+                            }
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            onclick="deleteSafePoint('${point._id}')">
+
+                            🗑 Delete
+
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+
+        /* =====================================================
+           ADD / UPDATE SAFE POINT
+           ===================================================== */
+
+        async function saveSafePoint() {
+
+            const name =
+                document
+                    .getElementById(
+                        "safePointName"
+                    )
+                    .value
+                    .trim();
+
+
+            const address =
+                document
+                    .getElementById(
+                        "safePointAddress"
+                    )
+                    .value
+                    .trim();
+
+
+            const type =
+                document
+                    .getElementById(
+                        "safePointType"
+                    )
+                    .value;
+
+
+            const latitude =
+                document
+                    .getElementById(
+                        "safePointLatitude"
+                    )
+                    .value;
+
+
+            const longitude =
+                document
+                    .getElementById(
+                        "safePointLongitude"
+                    )
+                    .value;
+
+
+            const active =
+                document
+                    .getElementById(
+                        "safePointActive"
+                    )
+                    .checked;
+
+
+            if (
+                !name ||
+                !address ||
+                !latitude ||
+                !longitude
+            ) {
+
+                showMessage(
+                    "safePointMessage",
+                    "Please fill all required fields.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const payload = {
+
+                name,
+
+                address,
+
+                type,
+
+                latitude:
+                    Number(latitude),
+
+                longitude:
+                    Number(longitude),
+
+                active
+
+            };
+
+
+            try {
+
+                let url =
+                    "/api/admin/safe-points";
+
+
+                let method =
+                    "POST";
+
+
+                if (
+                    editingSafePointId
+                ) {
+
+                    url =
+                        `/api/admin/safe-points/${editingSafePointId}`;
+
+                    method =
+                        "PUT";
+
+                }
+
+
+                const response =
+                    await fetch(
+                        url,
+                        {
+                            method,
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            credentials:
+                                "same-origin",
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showMessage(
+                        "safePointMessage",
+                        data.message ||
+                        "Unable to save Safe Area.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                showMessage(
+                    "safePointMessage",
+                    data.message ||
+                    "Safe Area saved successfully.",
+                    "success"
+                );
+
+
+                cancelSafePointEdit();
+
+                await loadSafePointsAdmin();
+
+                await loadActivityLogs();
+
+
+            } catch(error) {
+
+                console.error(
+                    "Safe point save error:",
+                    error
+                );
+
+
+                showMessage(
+                    "safePointMessage",
+                    "Server se connection nahi ho raha.",
+                    "error"
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           EDIT SAFE POINT
+           ===================================================== */
+
+        function editSafePoint(
+            id
+        ) {
+
+            const point =
+                allSafePoints.find(
+                    item =>
+                        String(item._id) ===
+                        String(id)
+                );
+
+
+            if (!point) {
+
+                alert(
+                    "Safe Area not found."
+                );
+
+                return;
+
+            }
+
+
+            editingSafePointId =
+                point._id;
+
+
+            document.getElementById(
+                "safePointName"
+            ).value =
+                point.name ||
+                "";
+
+
+            document.getElementById(
+                "safePointAddress"
+            ).value =
+                point.address ||
+                "";
+
+
+            document.getElementById(
+                "safePointType"
+            ).value =
+                point.type ||
+                "Safe Area";
+
+
+            document.getElementById(
+                "safePointLatitude"
+            ).value =
+                point.latitude ??
+                "";
+
+
+            document.getElementById(
+                "safePointLongitude"
+            ).value =
+                point.longitude ??
+                "";
+
+
+            document.getElementById(
+                "safePointActive"
+            ).checked =
+                point.active !==
+                false;
+
+
+            document.getElementById(
+                "safePointSaveBtn"
+            ).textContent =
+                "💾 Update Safe Area";
+
+
+            document.getElementById(
+                "safePointCancelBtn"
+            ).style.display =
+                "inline-block";
+
+
+            document
+                .getElementById(
+                    "safePointSection"
+                )
+                .scrollIntoView({
+                    behavior:
+                        "smooth"
+                });
+
+        }
+
+
+        /* =====================================================
+           CANCEL SAFE POINT EDIT
+           ===================================================== */
+
+        function cancelSafePointEdit() {
+
+            editingSafePointId =
+                null;
+
+
+            document.getElementById(
+                "safePointName"
+            ).value =
+                "";
+
+
+            document.getElementById(
+                "safePointAddress"
+            ).value =
+                "";
+
+
+            document.getElementById(
+                "safePointType"
+            ).value =
+                "Safe Area";
+
+
+            document.getElementById(
+                "safePointLatitude"
+            ).value =
+                "";
+
+
+            document.getElementById(
+                "safePointLongitude"
+            ).value =
+                "";
+
+
+            document.getElementById(
+                "safePointActive"
+            ).checked =
+                true;
+
+
+            document.getElementById(
+                "safePointSaveBtn"
+            ).textContent =
+                "➕ Add Safe Area";
+
+
+            document.getElementById(
+                "safePointCancelBtn"
+            ).style.display =
+                "none";
+
+        }
+
+
+        /* =====================================================
+           ENABLE / DISABLE SAFE POINT
+           ===================================================== */
+
+        async function toggleSafePoint(
+            id,
+            newActiveStatus
+        ) {
+
+            const point =
+                allSafePoints.find(
+                    item =>
+                        String(item._id) ===
+                        String(id)
+                );
+
+
+            if (!point) {
+
+                alert(
+                    "Safe Area not found."
+                );
+
+                return;
+
+            }
+
+
+            const action =
+                newActiveStatus
+                    ? "enable"
+                    : "disable";
+
+
+            if (
+                !confirm(
+                    `Do you want to ${action} "${point.name}"?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/admin/safe-points/${id}`,
+                        {
+                            method:
+                                "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            credentials:
+                                "same-origin",
+
+                            body:
+                                JSON.stringify({
+                                    active:
+                                        newActiveStatus
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Unable to update Safe Area."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadSafePointsAdmin();
+
+                await loadActivityLogs();
+
+
+            } catch(error) {
+
+                console.error(
+                    "Safe point status error:",
+                    error
+                );
+
+
+                alert(
+                    "Server se connection nahi ho raha."
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           DELETE SAFE POINT
+           ===================================================== */
+
+        async function deleteSafePoint(
+            id
+        ) {
+
+            const point =
+                allSafePoints.find(
+                    item =>
+                        String(item._id) ===
+                        String(id)
+                );
+
+
+            if (!point) {
+
+                alert(
+                    "Safe Area not found."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !confirm(
+                    `Delete "${point.name}" permanently?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/admin/safe-points/${id}`,
+                        {
+                            method:
+                                "DELETE",
+
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Unable to delete Safe Area."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadSafePointsAdmin();
+
+                await loadActivityLogs();
+
+
+                showMessage(
+                    "safePointMessage",
+                    data.message ||
+                    "Safe Area deleted successfully.",
+                    "success"
+                );
+
+
+            } catch(error) {
+
+                console.error(
+                    "Safe point delete error:",
+                    error
+                );
+
+
+                alert(
+                    "Server se connection nahi ho raha."
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           GOVERNMENT ADMINS
+           ===================================================== */
+
+        async function loadGovernmentAdmins() {
+
+            const list =
+                document.getElementById(
+                    "governmentAdminList"
+                );
+
+
+            list.innerHTML =
+                `
+                <div class="empty-state">
+                    Loading government admins...
+                </div>
+                `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/government-admins",
+                        {
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to load government admins."
+                    );
+
+                }
+
+
+                const admins =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            data.admins ||
+                            []
+                        );
+
+
+                if (
+                    !admins.length
+                ) {
+
+                    list.innerHTML =
+                        `
+                        <div class="empty-state">
+
+                            No Government Admins found.
+
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                list.innerHTML =
+                    admins
+                        .map(
+                            createGovernmentAdminCard
+                        )
+                        .join("");
+
+
+            } catch(error) {
+
+                console.error(
+                    "Government admin load error:",
+                    error
+                );
+
+
+                list.innerHTML =
+                    `
+                    <div class="empty-state">
+
+                        Unable to load government admins.
+
+                        <br>
+
+                        <small>
+
+                            ${escapeHtml(
+                                error.message
+                            )}
+
+                        </small>
+
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+        function createGovernmentAdminCard(
+            admin
+        ) {
+
+            const active =
+                admin.active !== false;
+
+
+            return `
+                <div class="admin-card">
+
+                    <div class="admin-card-info">
+
+                        <strong>
+
+                            👤
+                            ${escapeHtml(
+                                admin.username
+                            )}
+
+                        </strong>
+
+
+                        <small>
+
+                            Created:
+                            ${formatDate(
+                                admin.createdAt
+                            )}
+
+                        </small>
+
+
+                        <div
+                            style="margin-top:6px;">
+
+                            ${
+                                active
+                                    ? `
+                                        <span class="active-badge">
+
+                                            ACTIVE
+
+                                        </span>
+                                    `
+                                    : `
+                                        <span class="inactive-badge">
+
+                                            DISABLED
+
+                                        </span>
+                                    `
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="action-row">
+
+                        <button
+                            type="button"
+                            class="btn ${
+                                active
+                                    ? "btn-warning"
+                                    : "btn-success"
+                            }"
+                            onclick="toggleGovernmentAdmin('${admin._id}', ${!active})">
+
+                            ${
+                                active
+                                    ? "⏸ Disable"
+                                    : "▶ Enable"
+                            }
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="changeGovernmentAdminPassword('${admin._id}')">
+
+                            🔐 Password
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            onclick="deleteGovernmentAdmin('${admin._id}', '${escapeHtml(admin.username)}')">
+
+                            🗑 Delete
+
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+
+        async function createGovernmentAdmin() {
+
+            const username =
+                document
+                    .getElementById(
+                        "newAdminUsername"
+                    )
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById(
+                        "newAdminPassword"
+                    )
+                    .value;
+
+
+            if (
+                !username ||
+                !password
+            ) {
+
+                showMessage(
+                    "governmentAdminMessage",
+                    "Username and password are required.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/government-admins",
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            credentials:
+                                "same-origin",
+
+                            body:
+                                JSON.stringify({
+                                    username,
+                                    password
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showMessage(
+                        "governmentAdminMessage",
+                        data.message ||
+                        "Unable to create admin.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                document.getElementById(
+                    "newAdminUsername"
+                ).value =
+                    "";
+
+
+                document.getElementById(
+                    "newAdminPassword"
+                ).value =
+                    "";
+
+
+                showMessage(
+                    "governmentAdminMessage",
+                    data.message ||
+                    "Government Admin created successfully.",
+                    "success"
+                );
+
+
+                await loadGovernmentAdmins();
+
+                await loadActivityLogs();
+
+
+            } catch(error) {
+
+                console.error(
+                    "Create admin error:",
+                    error
+                );
+
+
+                showMessage(
+                    "governmentAdminMessage",
+                    "Server se connection nahi ho raha.",
+                    "error"
+                );
+
+            }
+
+        }
+
+
+        async function toggleGovernmentAdmin(
+            id,
+            active
+        ) {
+
+            if (
+                !confirm(
+                    active
+                        ? "Enable this Government Admin?"
+                        : "Disable this Government Admin?"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/government-admins/${id}/status`,
+                        {
+                            method:
+                                "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            credentials:
+                                "same-origin",
+
+                            body:
+                                JSON.stringify({
+                                    active
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Unable to update admin."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadGovernmentAdmins();
+
+                await loadActivityLogs();
+
+
+            } catch(error) {
+
+                console.error(error);
+
+
+                alert(
+                    "Server se connection nahi ho raha."
+                );
+
+            }
+
+        }
+
+
+        async function deleteGovernmentAdmin(
+            id,
+            username
+        ) {
+
+            if (
+                !confirm(
+                    `Delete Government Admin "${username}"?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/government-admins/${id}`,
+                        {
+                            method:
+                                "DELETE",
+
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Unable to delete admin."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadGovernmentAdmins();
+
+                await loadActivityLogs();
+
+
+            } catch(error) {
+
+                console.error(error);
+
+
+                alert(
+                    "Server se connection nahi ho raha."
+                );
+
+            }
+
+        }
+
+
+        async function changeGovernmentAdminPassword(
+            id
+        ) {
+
+            const password =
+                prompt(
+                    "Enter new password (minimum 6 characters):"
+                );
+
+
+            if (
+                password ===
+                null
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                password.length <
+                6
+            ) {
+
+                alert(
+                    "Password must contain at least 6 characters."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/government-admins/${id}/password`,
+                        {
+                            method:
+                                "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            credentials:
+                                "same-origin",
+
+                            body:
+                                JSON.stringify({
+                                    password
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Unable to change password."
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    data.message ||
+                    "Password changed successfully."
+                );
+
+
+                await loadActivityLogs();
+
+
+            } catch(error) {
+
+                console.error(error);
+
+
+                alert(
+                    "Server se connection nahi ho raha."
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           CHANGE OWN PASSWORD
+           ===================================================== */
+
+        document
+            .getElementById(
+                "changePasswordForm"
+            )
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+
+                    const currentPassword =
+                        document
+                            .getElementById(
+                                "currentPassword"
+                            )
+                            .value;
+
+
+                    const newPassword =
+                        document
+                            .getElementById(
+                                "newPassword"
+                            )
+                            .value;
+
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                "/api/admin/change-password",
+                                {
+                                    method:
+                                        "PUT",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    credentials:
+                                        "same-origin",
+
+                                    body:
+                                        JSON.stringify({
+                                            currentPassword,
+                                            newPassword
+                                        })
+                                }
+                            );
+
+
+                        const data =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            showMessage(
+                                "passwordMessage",
+                                data.message ||
+                                "Unable to change password.",
+                                "error"
+                            );
+
+                            return;
+
+                        }
+
+
+                        document.getElementById(
+                            "currentPassword"
+                        ).value =
+                            "";
+
+
+                        document.getElementById(
+                            "newPassword"
+                        ).value =
+                            "";
+
+
+                        showMessage(
+                            "passwordMessage",
+                            data.message ||
+                            "Password changed successfully.",
+                            "success"
+                        );
+
+
+                        await loadActivityLogs();
+
+
+                    } catch(error) {
+
+                        console.error(error);
+
+
+                        showMessage(
+                            "passwordMessage",
+                            "Server se connection nahi ho raha.",
+                            "error"
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* =====================================================
+           ACTIVITY LOGS
+           ===================================================== */
+
+        async function loadActivityLogs() {
+
+            const list =
+                document.getElementById(
+                    "activityLogList"
+                );
+
+
+            try {
+
+                let response =
+                    await fetch(
+                        "/api/activity-logs",
+                        {
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+
+                if (
+                    response.status ===
+                    404
+                ) {
+
+                    response =
+                        await fetch(
+                            "/api/admin/activity-logs",
+                            {
+                                credentials:
+                                    "same-origin"
+                            }
+                        );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to load activity logs."
+                    );
+
+                }
+
+
+                const logs =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            data.logs ||
+                            []
+                        );
+
+
+                if (!logs.length) {
+
+                    list.innerHTML =
+                        `
+                        <div class="empty-state">
+
+                            No activity logs found.
+
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                list.innerHTML =
+                    logs
+                        .map(
+                            createLogCard
+                        )
+                        .join("");
+
+
+            } catch(error) {
+
+                console.error(
+                    "Activity log error:",
+                    error
+                );
+
+
+                list.innerHTML =
+                    `
+                    <div class="empty-state">
+
+                        Unable to load activity logs.
+
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+        function createLogCard(
+            log
+        ) {
+
+            return `
+                <div class="log-card">
+
+                    <div class="log-action">
+
+                        ${escapeHtml(
+                            log.action
+                        )}
+
+                    </div>
+
+
+                    <div class="log-details">
+
+                        ${
+                            log.username
+                                ? `Admin: ${escapeHtml(
+                                    log.username
+                                )}`
+                                : ""
+                        }
+
+
+                        ${
+                            log.requestId
+                                ? ` | Request: ${escapeHtml(
+                                    log.requestId
+                                )}`
+                                : ""
+                        }
+
+
+                        ${
+                            log.details
+                                ? ` | ${escapeHtml(
+                                    log.details
+                                )}`
+                                : ""
+                        }
+
+                    </div>
+
+
+                    <div class="log-time">
+
+                        ${formatDate(
+                            log.createdAt
+                        )}
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+
+        /* =====================================================
+           STAT CARD KEYBOARD SUPPORT
+           ===================================================== */
+
+        document
+            .querySelectorAll(".stat-card")
+            .forEach(
+                (card) => {
+
+                    card.addEventListener(
+                        "keydown",
+                        function(event) {
+
+                            if (
+                                event.key ===
+                                    "Enter" ||
+                                event.key ===
+                                    " "
+                            ) {
+
+                                event.preventDefault();
+
+                                this.click();
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           MAKE FUNCTIONS AVAILABLE TO HTML ONCLICK
+           ===================================================== */
+
+        window.loadRequests =
+            loadRequests;
+
+
+        window.acceptRequest =
+            acceptRequest;
+
+
+        window.completeRequest =
+            completeRequest;
+
+
+        window.pendingRequest =
+            pendingRequest;
+
+
+        window.updateRequestStatus =
+            updateRequestStatus;
+
+
+        window.deleteRequest =
+            deleteRequest;
+
+
+        window.filterRequests =
+            filterRequests;
+
+
+        window.loadSafePointsAdmin =
+            loadSafePointsAdmin;
+
+
+        window.saveSafePoint =
+            saveSafePoint;
+
+
+        window.editSafePoint =
+            editSafePoint;
+
+
+        window.cancelSafePointEdit =
+            cancelSafePointEdit;
+
+
+        window.toggleSafePoint =
+            toggleSafePoint;
+
+
+        window.deleteSafePoint =
+            deleteSafePoint;
+
+
+        window.loadGovernmentAdmins =
+            loadGovernmentAdmins;
+
+
+        window.createGovernmentAdmin =
+            createGovernmentAdmin;
+
+
+        window.toggleGovernmentAdmin =
+            toggleGovernmentAdmin;
+
+
+        window.deleteGovernmentAdmin =
+            deleteGovernmentAdmin;
+
+
+        window.changeGovernmentAdminPassword =
+            changeGovernmentAdminPassword;
+
+
+        window.loadActivityLogs =
+            loadActivityLogs;
+
+
+        window.logoutAdmin =
+            logoutAdmin;
+
+
+        /* =====================================================
+           START
+           ===================================================== */
+
+        checkAdminSession();
+
+    </script>
+
+</body>
+
+</html>
+```

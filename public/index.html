@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>JalRakshak - Flood Safety</title>
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                Arial,
+                Helvetica,
+                sans-serif;
+            background: #f1f8ff;
+            color: #0f172a;
+        }
+
+        header {
+            background:
+                linear-gradient(
+                    135deg,
+                    #0066cc,
+                    #008c95
+                );
+            color: white;
+            text-align: center;
+            padding: 28px 18px;
+            box-shadow:
+                0 8px 25px rgba(0, 80, 140, 0.18);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            opacity: 0.94;
+            font-size: 15px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 34px 20px 18px;
+        }
+
+        .hero h2 {
+            margin: 0 0 10px;
+            font-size: 28px;
+            color: #0f172a;
+        }
+
+        .hero p {
+            max-width: 760px;
+            margin: auto;
+            line-height: 1.7;
+            color: #475569;
+        }
+
+        .container {
+            width: min(1250px, 94%);
+            margin: 18px auto 40px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(240px, 1fr)
+                );
+
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+
+            box-shadow:
+                0 8px 24px rgba(15, 23, 42, 0.08);
+
+            border:
+                1px solid #e2e8f0;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 14px 30px rgba(15, 23, 42, 0.12);
+        }
+
+        .card h3 {
+            margin: 0 0 15px;
+            color: #0f4c81;
+            font-size: 18px;
+        }
+
+        .card p {
+            line-height: 1.6;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 11px 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0066cc,
+                    #008c95
+                );
+
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+
+            transition:
+                transform 0.15s ease,
+                opacity 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow:
+                0 7px 16px rgba(0, 102, 204, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 11px 12px;
+            margin-top: 7px;
+            margin-bottom: 12px;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            font-family: inherit;
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #008c95;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    0,
+                    140,
+                    149,
+                    0.1
+                );
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        #map {
+            height: 350px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 5px;
+            border: 1px solid #cbd5e1;
+        }
+
+        #routeInfo {
+            margin-top: 14px;
+            padding: 14px;
+
+            background: #ecfeff;
+            border:
+                1px solid #99f6e4;
+
+            border-radius: 10px;
+
+            line-height: 1.6;
+        }
+
+        .analysis-result {
+            margin-top: 15px;
+            padding: 14px;
+
+            background: #f8fafc;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 10px;
+        }
+
+        .analysis-result p {
+            margin: 8px 0;
+        }
+
+        .analysis-label {
+            font-weight: 700;
+        }
+
+        .emergency-option {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 11px;
+
+            background: #fff1f2;
+            border:
+                1px solid #fecdd3;
+
+            border-radius: 9px;
+
+            margin-bottom: 12px;
+        }
+
+        .emergency-option input {
+            width: auto;
+            margin: 0;
+        }
+
+        #locationStatus,
+        #requestLocationInfo {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+
+            background: #f1f5f9;
+            color: #475569;
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message {
+            padding: 11px;
+            border-radius: 9px;
+            margin: 10px 0;
+
+            display: none;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .message.success {
+            display: block;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #86efac;
+        }
+
+        .message.error {
+            display: block;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+
+        .success-box {
+            margin-top: 14px;
+            padding: 15px;
+
+            background: #ecfdf5;
+            border:
+                1px solid #86efac;
+
+            color: #047857;
+
+            border-radius: 10px;
+        }
+
+        .request-id {
+            display: inline-block;
+            margin-top: 7px;
+
+            padding: 8px 12px;
+
+            background: white;
+            border-radius: 8px;
+
+            font-weight: 800;
+            letter-spacing: 1px;
+
+            color: #065f46;
+        }
+
+        .status-box {
+            margin-top: 14px;
+            padding: 15px;
+
+            border-radius: 10px;
+            line-height: 1.7;
+
+            border: 1px solid #cbd5e1;
+        }
+
+        .status-pending {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+
+        .status-accepted {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #1d4ed8;
+        }
+
+        .status-completed {
+            background: #ecfdf5;
+            border-color: #86efac;
+            color: #047857;
+        }
+
+        .helper-text {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+
+            background: #0f172a;
+            color: #cbd5e1;
+
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 27px;
+            }
+
+            .hero h2 {
+                font-size: 23px;
+            }
+
+            .container {
+                width: 92%;
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            #map {
+                height: 300px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>🌊 JalRakshak</h1>
+
+    <p>
+        Real-Time Urban Flood Safety System
+    </p>
+
+</header>
+
+
+<section class="hero">
+
+    <h2>
+        Stay Safe During Floods
+    </h2>
+
+    <p>
+        Get safe-route guidance, analyze flood conditions,
+        request emergency assistance and track your request
+        status from one place.
+    </p>
+
+</section>
+
+
+<main class="container">
+
+
+    <!-- =====================================================
+         SAFE ROUTE
+         ===================================================== -->
+
+    <section class="card">
+
+        <h3>
+            🛡️ SAFE ROUTE
+        </h3>
+
+        <p class="helper-text">
+            First allow your current location, then JalRakshak
+            will identify the nearest verified safe area.
+        </p>
+
+        <div
+            id="locationStatus">
+            📍 Location not detected yet.
+        </div>
+
+        <div class="button-row">
+
+            <button
+                type="button"
+                id="allowLocationBtn">
+
+                📍 Get My Current Location
+
+            </button>
+
+            <button
+                type="button"
+                onclick="findSafeRoute()">
+
+                🛡️ Find Safe Route
+
+            </button>
+
+        </div>
+
+        <div
+            id="routeInfo"
+            style="display:none;">
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FLOOD MAP
+         ===================================================== -->
+
+    <section class="card">
+
+        <h3>
+            🗺️ FLOOD MAP
+        </h3>
+
+        <p class="helper-text">
+            View your location, safe points and route guidance.
+        </p>
+
+        <div id="map"></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FLOOD ANALYSIS
+         ===================================================== -->
+
+    <section class="card">
+
+        <h3>
+            🤖 FLOOD ANALYSIS
+        </h3>
+
+        <p class="helper-text">
+            Upload a flood photo for AI-assisted safety analysis.
+        </p>
+
+        <label for="floodPhoto">
+            Select Flood Photo
+        </label>
+
+        <input
+            type="file"
+            id="floodPhoto"
+            accept="image/*">
+
+        <img
+            id="photoPreview"
+            alt="Flood photo preview"
+            style="
+                display:none;
+                width:100%;
+                max-height:220px;
+                object-fit:cover;
+                border-radius:10px;
+                margin:10px 0;
+                border:1px solid #cbd5e1;
+            ">
+
+        <button
+            type="button"
+            id="analyzeFloodBtn"
+            onclick="analyzeFlood()">
+
+            🤖 Analyze Flood
+
+        </button>
+
+        <div
+            id="analysisResult"
+            class="analysis-result"
+            style="display:none;">
+
+            <p>
+                <span class="analysis-label">
+                    Danger Level:
+                </span>
+                <span id="dangerLevel">
+                    -
+                </span>
+            </p>
+
+            <p>
+                <span class="analysis-label">
+                    Estimated Water Level:
+                </span>
+                <span id="waterLevel">
+                    -
+                </span>
+            </p>
+
+            <p>
+                <span class="analysis-label">
+                    Safety Advice:
+                </span>
+                <span id="safetyMessage">
+                    -
+                </span>
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         REQUEST VOLUNTEER
+         ===================================================== -->
+
+    <section class="card">
+
+        <h3>
+            🚨 REQUEST VOLUNTEER
+        </h3>
+
+        <p class="helper-text">
+            Send your emergency details and current location
+            to the JalRakshak response team.
+        </p>
+
+        <button
+            type="button"
+            id="requestHelpBtn">
+
+            🚨 Request Help
+
+        </button>
+
+
+        <div
+            id="volunteerForm"
+            style="
+                display:none;
+                margin-top:18px;
+            ">
+
+
+            <div
+                id="requestMessage"
+                class="message"
+                style="display:none;">
+            </div>
+
+
+            <label for="name">
+                Full Name
+            </label>
+
+            <input
+                id="name"
+                type="text"
+                placeholder="Enter your full name"
+                autocomplete="name">
+
+
+            <label for="mobile">
+                Mobile Number
+            </label>
+
+            <input
+                id="mobile"
+                type="tel"
+                inputmode="numeric"
+                maxlength="10"
+                placeholder="10-digit mobile number"
+                autocomplete="tel">
+
+
+            <label for="emergencyDetails">
+                Emergency Details
+            </label>
+
+            <textarea
+                id="emergencyDetails"
+                placeholder="Describe your emergency, location situation, injuries, trapped persons, etc."></textarea>
+
+
+            <label class="emergency-option">
+
+                <input
+                    type="checkbox"
+                    id="isEmergency">
+
+                <span>
+                    🚨 This is an urgent / life-threatening emergency
+                </span>
+
+            </label>
+
+
+            <div
+                id="requestLocationInfo">
+                📍 Location is required before submitting your request.
+            </div>
+
+
+            <button
+                type="button"
+                id="allowLocationBtn"
+                style="margin-bottom:10px;">
+
+                📍 Get / Update My Location
+
+            </button>
+
+
+            <button
+                type="button"
+                id="submitRequestBtn">
+
+                🚨 Submit Request for Help
+
+            </button>
+
+
+            <div
+                id="requestSuccess"
+                class="success-box"
+                style="display:none;">
+
+                <strong>
+                    ✅ Request Submitted Successfully
+                </strong>
+
+                <br>
+
+                Your Request ID is:
+
+                <div
+                    id="requestIdText"
+                    class="request-id">
+                </div>
+
+                <p style="margin-bottom:0;">
+                    Please keep this Request ID safe.
+                    You can use it below to check your rescue status.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CHECK STATUS
+         ===================================================== -->
+
+    <section class="card">
+
+        <h3>
+            📋 CHECK STATUS
+        </h3>
+
+        <p class="helper-text">
+            Enter your Request ID to check the latest response status.
+        </p>
+
+        <input
+            id="requestId"
+            type="text"
+            placeholder="Example: JR-123456"
+            autocomplete="off">
+
+        <button
+            type="button"
+            id="checkStatusBtn">
+
+            🔎 Check Request Status
+
+        </button>
+
+
+        <div
+            id="statusResult"
+            style="display:none;">
+
+            <div
+                id="statusBox"
+                class="status-box status-pending">
+
+                <strong>
+                    Request ID:
+                </strong>
+
+                <span id="statusRequestIdText">
+                    -
+                </span>
+
+                <br>
+
+                <strong>
+                    Name:
+                </strong>
+
+                <span id="statusName">
+                    -
+                </span>
+
+                <br>
+
+                <strong>
+                    Status:
+                </strong>
+
+                <span id="statusValue">
+                    Pending
+                </span>
+
+                <br>
+
+                <strong>
+                    Emergency Details:
+                </strong>
+
+                <span id="statusEmergencyDetails">
+                    -
+                </span>
+
+                <br>
+
+                <strong>
+                    Submitted:
+                </strong>
+
+                <span id="statusCreatedAt">
+                    -
+                </span>
+
+                <br>
+
+                <strong>
+                    Handled By:
+                </strong>
+
+                <span id="statusHandledBy">
+                    Not assigned yet
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="statusError"
+            class="message error"
+            style="display:none;">
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<footer>
+
+    © 2026 JalRakshak |
+    Flood Safety & Emergency Assistance
+
+</footer>
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
