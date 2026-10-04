@@ -10,7 +10,17 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+
+// ======================================================
+// MONGODB URI
+// ======================================================
+
+// Render par MONGODB_URI use hoga.
+// Local computer par agar MONGODB_URI nahi hai,
+// to MONGO_URI ya local MongoDB fallback use hoga.
+
 const MONGO_URI =
+    process.env.MONGODB_URI ||
     process.env.MONGO_URI ||
     "mongodb://127.0.0.1:27017/jalrakshak";
 
@@ -2001,9 +2011,6 @@ async function callGeminiWithRetry({
 
     const maxAttempts = 3;
 
-    // Wait times:
-    // Attempt 1 fails -> 2 seconds
-    // Attempt 2 fails -> 5 seconds
     const retryDelays = [
         2000,
         5000
@@ -2068,7 +2075,6 @@ async function callGeminiWithRetry({
             lastResponseText =
                 responseText;
 
-            // Success
             if (response.ok) {
                 console.log(
                     `Gemini request successful on attempt ${attempt}.`
@@ -2088,7 +2094,6 @@ async function callGeminiWithRetry({
                 responseText
             );
 
-            // Retry only temporary service errors
             const shouldRetry =
                 response.status === 503 ||
                 response.status === 429 ||
@@ -2114,7 +2119,6 @@ async function callGeminiWithRetry({
                 continue;
             }
 
-            // Permanent error or all retries exhausted
             return {
                 success: false,
                 status:
@@ -2184,7 +2188,6 @@ app.post(
                 });
             }
 
-            // Accept frontend image field
             let imageBase64 =
                 req.body.image ||
                 req.body.imageBase64 ||
@@ -2205,7 +2208,6 @@ app.post(
                 });
             }
 
-            // Handle complete data URL
             if (
                 imageBase64.startsWith(
                     "data:"
@@ -2226,7 +2228,6 @@ app.post(
                 }
             }
 
-            // Remove spaces/newlines
             const cleanBase64 =
                 String(
                     imageBase64
